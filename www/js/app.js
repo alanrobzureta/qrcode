@@ -23,26 +23,32 @@ angular.module('starter', ['ionic','ngCordova'])
   });
 })
 
-        .controller('QrCodeCtrl',['$http','$scope','$cordovaBarcodeScanner',function($http,$scope,$cordovaBarcodeScanner){
-                $scope.scan = function(){
-                    console.log('Click');  
-                    $cordovaBarcodeScanner
-                    .scan()
-                    .then(function(barcodeData) {
-                      console.log(barcodeData.text)
-                    }, function(error) {
-                      // An error occurred
-                    });
-                };
-                
-                $scope.checkCupom = function(cupom){
-                    //$http.get('/laravel_ionic_cordova/public/api/cupom/'+cupom).then(successCallback,errorCallback);
-                    $http.get('http://localhost/laravel_ionic_cordova/public/api/cupom/'+cupom).then(
-                    function(data){
-                        console.log(data);
-                    },
-                    function(error){
-                        console.log(error);
-                    });
-                };
-        }]);
+        .controller('QrCodeCtrl',['$http','$scope','$cordovaBarcodeScanner',
+            function($http,$scope,$cordovaBarcodeScanner){
+                    $scope.result = false;
+                    $scope.scan = function(){
+                        console.log('Click');
+                        $cordovaBarcodeScanner
+                        .scan()
+                        .then(function(barcodeData) {
+                          console.log(barcodeData.text)
+                                $scope.checkCupom(barcodeData.text);
+                        }, function(error) {
+                          // An error occurred
+                        });
+                    };
+
+                    $scope.checkCupom = function(cupom){
+                        //$http.get('/laravel_ionic_cordova/public/api/cupom/'+cupom).then(successCallback,errorCallback);
+                        $http.get('http://localhost/laravel_ionic_cordova/public/api/cupom/'+cupom).then(
+                        function(data){
+                            if(data.data.result == true){
+                                $scope.result = true;
+                            }
+                            //console.log(data.data.result);
+                        },
+                        function(error){
+
+                        });
+                    };
+            }]);
